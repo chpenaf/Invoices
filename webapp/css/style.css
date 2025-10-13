@@ -1,1 +1,4 @@
-/* Enter your custom styles here */
+.boldElements {
+    margin-top: 8px;
+    font-weight: bold;
+}
