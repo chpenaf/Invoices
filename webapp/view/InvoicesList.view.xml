@@ -1,17 +1,88 @@
 <mvc:View
+        controllerName="com.logaligroup.invoices.controller.InvoicesList"
         xmlns="sap.m"
-        xmlns:mvc="sap.ui.core.mvc">
+        xmlns:mvc="sap.ui.core.mvc"
+        xmlns:core="sap.ui.core" >
     
     <List
         id="List"
         headerText="{i18n>invoices}"
         class="sapUiResponsiveMargin"
-        items="{invoices>/Invoices}"
+        items="{
+            path: 'invoices>/Invoices',
+            filters: {
+                path: 'ExtendedPrice',
+                operator: 'BT',
+                value1: '0.00',
+                value2: '30000.00'
+            },
+            sorter: {
+                path: 'ShipperName',
+                group: true
+            }
+        }"
         width="auto">
+
+        <headerToolbar>
+            <Toolbar>
+                <Title text="{i18n>invoices}" />
+                <ToolbarSpacer />
+                <!-- <MultiComboBox 
+                    maxWidth="250px"
+                    showClearIcon="true"
+                    items="{
+                        path: 'statusModel>/status',
+                        sorter: { path: 'stat' }
+                    }">
+			        <core:Item key="{stat}" text="{text}"/>
+                </MultiComboBox> -->
+                <MultiComboBox 
+                    width="auto"
+                    showClearIcon="true"
+                    selectionChange="handleSelectionChange"
+                    selectionFinish="handleSelectionFinish" >
+                    <core:Item key="A" text="{i18n>invoicesStatusA}" />
+                    <core:Item key="B" text="{i18n>invoicesStatusB}" />
+                    <core:Item key="C" text="{i18n>invoicesStatusC}" />
+                </MultiComboBox>
+                <SearchField 
+                    search="onSearchPress"                
+                    width="50%" />
+            </Toolbar>
+        </headerToolbar>
 
         <items>
             <ObjectListItem 
-                    title="{invoices>Quantity} x {invoices>ProductName}">
+                title="{invoices>Quantity} x {invoices>ProductName}"
+                number="{
+                    parts: [
+                        'invoices>ExtendedPrice',
+                        'currency>/usd'
+                    ],
+                    type: 'sap.ui.model.type.Currency',
+                    formatOptions: {
+                        showMeasure: false,
+                        decimalSeparator: ',',
+                        groupingSeparator: '.'
+                    }
+                }"
+                numberUnit="{currency>/usd}"
+                numberState="{= 
+                    ( ${invoices>ExtendedPrice} >= 0.00 &amp;&amp; ${invoices>ExtendedPrice} &lt;= 200.00 ) ? 'Error' : 
+                    ( ${invoices>ExtendedPrice} > 200.00 &amp;&amp; ${invoices>ExtendedPrice} &lt;= 500.00 ) ? 'Warning' : 'Success' 
+                }" >
+
+                <firstStatus>
+                    <ObjectStatus 
+                        core:require="{
+                            MyFormatter: 'com/logaligroup/invoices/model/formatters'
+                        }"
+                        text="{
+                            path: 'invoices>Status',
+                            formatter: 'MyFormatter.statusText.bind($controller)'
+                        }" />
+                </firstStatus>
+
             </ObjectListItem>
         </items>
     
