@@ -9,7 +9,7 @@
         headerText="{i18n>invoices}"
         class="sapUiResponsiveMargin"
         items="{
-            path: 'invoices>/Invoices',
+            path: 'northwind>/Invoices',
             filters: {
                 path: 'ExtendedPrice',
                 operator: 'BT',
@@ -53,10 +53,10 @@
 
         <items>
             <ObjectListItem 
-                title="{invoices>Quantity} x {invoices>ProductName}"
+                title="{northwind>Quantity} x {northwind>ProductName}"
                 number="{
                     parts: [
-                        'invoices>ExtendedPrice',
+                        'northwind>ExtendedPrice',
                         'currency>/usd'
                     ],
                     type: 'sap.ui.model.type.Currency',
@@ -68,20 +68,20 @@
                 }"
                 numberUnit="{currency>/usd}"
                 numberState="{= 
-                    ( ${invoices>ExtendedPrice} >= 0.00 &amp;&amp; ${invoices>ExtendedPrice} &lt;= 200.00 ) ? 'Error' : 
-                    ( ${invoices>ExtendedPrice} > 200.00 &amp;&amp; ${invoices>ExtendedPrice} &lt;= 500.00 ) ? 'Warning' : 'Success' 
+                    ( ${northwind>ExtendedPrice} >= 0.00 &amp;&amp; ${northwind>ExtendedPrice} &lt;= 200.00 ) ? 'Error' : 
+                    ( ${northwind>ExtendedPrice} > 200.00 &amp;&amp; ${northwind>ExtendedPrice} &lt;= 500.00 ) ? 'Warning' : 'Success' 
                 }" >
 
-                <firstStatus>
+                <!-- <firstStatus>
                     <ObjectStatus 
                         core:require="{
                             MyFormatter: 'com/logaligroup/invoices/model/formatters'
                         }"
                         text="{
-                            path: 'invoices>Status',
+                            path: 'northwind>Status',
                             formatter: 'MyFormatter.statusText.bind($controller)'
                         }" />
-                </firstStatus>
+                </firstStatus> -->
 
             </ObjectListItem>
         </items>
