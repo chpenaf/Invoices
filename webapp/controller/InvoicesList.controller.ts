@@ -8,6 +8,10 @@ import ListBinding from "sap/ui/model/ListBinding";
 import { MultiComboBox$SelectionFinishEvent,
          MultiComboBox$SelectionChangeEvent } from "sap/m/MultiComboBox";
 import Item from "sap/ui/core/Item";
+import Component from "../Component";
+import Event from "sap/ui/base/Event";
+import ObjectListItem from "sap/m/ObjectListItem";
+import Context from "sap/ui/model/odata/v2/Context";
 
 /**
  * @namespace com.logaligroup.invoices.controller
@@ -106,6 +110,21 @@ export default class InvoicesList extends Controller {
         const list = this.byId("List") as List;
         const binding = list.getBinding("items") as ListBinding;
         binding.filter(aFilters);
+    }
+
+    public onNavToDetail( event : Event ) : void {
+        const item = event.getSource() as ObjectListItem;
+        const bindingContext = item.getBindingContext("northwind") as Context;
+        const path = bindingContext.getPath();
+
+        // console.log(bindingContext.getObject());                // Obtiene el objeto completo
+        // console.log(bindingContext.getPath());                  // Obtiene la url de un objeto especifico
+        // console.log(bindingContext.getProperty("ProductName")); // Obtiene el valor de un campo especifico
+        
+        const router = ( this.getOwnerComponent() as Component ).getRouter();
+        router.navTo("RouteDetails", {
+            path: window.encodeURIComponent(path)
+        });
     }
 
 }

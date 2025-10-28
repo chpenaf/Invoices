@@ -86,8 +86,7 @@
         "type": "View",
         "viewType": "XML",
         "path": "com.logaligroup.invoices.view",
-        "async": true,
-        "viewPath": "com.logaligroup.invoices.view"
+        "async": true
       },
       "routes": [
         {
@@ -96,12 +95,20 @@
           "target": [
             "TargetMain"
           ]
+        },
+        {
+          "name": "RouteDetails",
+          "pattern": "detail/{path}:?query:",
+          "target": "TargetDetail"
         }
       ],
       "targets": {
         "TargetMain": {
           "id": "Main",
           "name": "Main"
+        },
+        "TargetDetail" : {
+          "name": "Detail"
         }
       }
     },
