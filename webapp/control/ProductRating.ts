@@ -1,9 +1,11 @@
 import Control from "sap/ui/core/Control";
 import RenderManager from "sap/ui/core/RenderManager";
 import { MetadataOptions } from "sap/ui/core/Element";
-import RatingIndicator from "sap/m/RatingIndicator";
+import RatingIndicator, { RatingIndicator$LiveChangeEvent } from "sap/m/RatingIndicator";
 import Label from "sap/m/Label";
 import Button from "sap/m/Button";
+import ResourceModel from "sap/ui/model/resource/ResourceModel";
+import ResourceBundle from "sap/base/i18n/ResourceBundle";
 
 /**
  * @namespace com.logaligroup.invoices.control
@@ -51,7 +53,8 @@ export default class ProductRating extends Control {
     init () : void {
         this.setAggregation("_rating", new RatingIndicator({
             value: this.getValue(),
-            iconSize: "2rem"
+            iconSize: "2rem",
+            liveChange: this._onRate.bind(this)
         }));
 
         this.setAggregation("_label", new Label({
@@ -59,7 +62,8 @@ export default class ProductRating extends Control {
         }).addStyleClass("sapUiSmallMargin"));
 
         this.setAggregation("_button", new Button({
-            text: "{i18n>productRatingButton}"
+            text: "{i18n>productRatingButton}",
+            press: this._onSubmit.bind(this)
         }).addStyleClass("sapUiSmallMarginTopBottom"));
     }
 
@@ -76,6 +80,38 @@ export default class ProductRating extends Control {
 
             rm.close("div");
         }
+    } 
+
+    _onRate ( event : RatingIndicator$LiveChangeEvent ) : void {
+        let rating = event.getSource() as RatingIndicator;
+        let resourceBundle = ( this.getModel('i18n') as ResourceModel ).getResourceBundle() as ResourceBundle;
+        let iValue = rating.getValue() as number;
+        let iMaxValue = rating.getMaxValue() as number;
+        this.setProperty("value", iValue);
+        (this.getAggregation("_label") as Label).setText(resourceBundle.getText("productRatingLabelIndicator",[iValue,iMaxValue]));
+        (this.getAggregation("_label") as Label).setDesign('Bold');
     }
+
+    _onSubmit () : void {
+        let resourceBundle = ( this.getModel('i18n') as ResourceModel ).getResourceBundle() as ResourceBundle;
+        (this.getAggregation("_rating") as RatingIndicator).setEnabled(false);
+        (this.getAggregation("_button") as Button).setEnabled(false);
+        (this.getAggregation("_label") as Label).setText(resourceBundle.getText("productRatingLabelFinal"));
+
+        this.fireEvent("change", {
+            value: this.getValue()
+        });
+
+    }
+
+    reset () : void {
+        let resourceBundle = ( this.getModel('i18n') as ResourceModel ).getResourceBundle() as ResourceBundle;
+        this.setValue(0);
+        (this.getAggregation("_rating") as RatingIndicator).setValue(0);
+        (this.getAggregation("_rating") as RatingIndicator).setEnabled(true);
+        (this.getAggregation("_button") as Button).setEnabled(true);
+        (this.getAggregation("_label") as Label).setText(resourceBundle.getText("productRatingLabelInitial"));
+        (this.getAggregation("_label") as Label).setDesign('Standard');
+    } 
 
 }

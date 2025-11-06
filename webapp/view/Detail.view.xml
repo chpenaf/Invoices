@@ -19,8 +19,9 @@
             </attributes>
         </ObjectHeader>
 
-        <rating:ProductRating   id="rating"
-                                class="sapUiSmallMarginBeginEnd" >
+        <rating:ProductRating   id="ProductRating" 
+                                class="sapUiSmallMarginBeginEnd" 
+                                change="onRateChange">
         </rating:ProductRating>
 
     </Page>
